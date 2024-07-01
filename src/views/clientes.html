@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <!-- evitar ataques de Cross Site Scripting (injeção de dados)-->
+     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'">
+    <title>Clientes</title>
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="../public/css/bootstrap.min.css">
+ 
+    <!-- css personalizado -->
+    <link rel="stylesheet" href="../public/css/style.css">
+</head>
+<body>
+    <br>
+    <h1>Clientes</h1>
+    <div class="container">
+        <form class="row g-3 " id="frmCliente">
+
+            <!-- Caixa de input -->
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="inputSearch" maxlength="30" spellcheck="false">
+            </div>
+
+            <!-- botão de pesquisa / crud read -->
+            <div class="col-md-4">
+                <button type="button" class="btn btn-danger">Buscar</button>
+            </div>
+ 
+            <hr class="border border-danger border-1 opacity-75">
+ 
+
+            <!-- id do mongoDB oculto -->
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="inputId" placeholder="ID">
+            </div>
+ 
+            <br>
+ 
+           
+            <div class="col-md-8">
+                <label for="inputName" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="inputName" required maxlength="30" spellcheck="false">
+                <br>
+                <label for="inputTEL" class="form-label">Telefone</label>
+                <input type="tel" class="form-control" id="inputTEL" required max="11" spellcheck="false">
+                <br>
+
+                <label for="inputEMAIL" class="form-label">Email</label>
+                <input type="email" class="form-control" id="inputEMAIL" required maxlength="30" spellcheck="false">
+            </div>
+
+            <div class="col-md-6">
+                <button type="button" class="btn btn-success">Adicionar</button>
+                <button type="button" class="btn btn-secondary">Editar</button>
+                <button type="button" class="btn btn-danger">Excluir</button>
+                <button type="reset" class="btn" id="btnReset"></button>
+            </div>
+
+        </form>
+    </div>
+ 
+     <!-- bootstrap -->
+     <script src="../public/js/bootstrap.min.js"></script>
+</body>
+</html>
