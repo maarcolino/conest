@@ -1,170 +1,96 @@
-const { ipcMain } = require('electron')
-const { app, BrowserWindow, Menu, shell } = require('electron/main')
+const { app, BrowserWindow, ipcMain, Menu, shell, nativeTheme, dialog } = require('electron')
 const path = require('node:path')
 
-//importar o modulo de conexão
-const { conectar, desconectar } = require('./database.js')
+// importar o módulo de conexão
+const { dbStatus, desconectar } = require('./database.js')
+// status de conexão do banco de dados (No MongoDB é mais eficiente manter uma única conexão aberta durante todo o tempo de vida do aplicativo e usá-la conforme necessário. Fechar e reabrir a conexão frequentemente pode aumentar a sobrecarga e causar problemas de desempenho)
+// a função dbStatus garante que a conexão com o banco de dados seja estabelecida apenas uma vez e reutilizada.
+// a variável abaixo é usada para garantir que o sistema inicie com o banco de dados desconectado
+let dbCon = null
 
-// janela principal (definir o objeto win como variável pública)
-let win
+// Importação do Schema (model) das coleções("tabelas")
+const clienteModel = require('./src/models/Cliente.js')
+const fornecedorModel = require('./src/models/Fornecedor.js')
+
+// Janela principal >>>>>>>>>>>>>>>>>>>>>>>>>>>
 const createWindow = () => {
-    win = new BrowserWindow({
+    nativeTheme.themeSource = 'light'
+    const win = new BrowserWindow({
         width: 800,
         height: 600,
-        resizable: false,
-        icon: './src/public/img/icon.png',
+        icon: './src/public/img/pc.png',
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
         }
     })
 
-    // Iniciar a janela com o menu personalizado
+    // menu personalizado
     Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 
     win.loadFile('./src/views/index.html')
-}
 
-//janela sobre
-let about //Resolver bug de abertura de várias janela
-const aboutWindow = () => {
-    const father = BrowserWindow.getFocusedWindow()
-    // Se a janela about n estiver aberta (bug 1) abrir
-    if (!about) {
-        about = new BrowserWindow({
-            width: 600, //largura
-            height: 450, //altura
-            resizable: false, //evitar o redimensionamento
-            //titleBarStyle: 'hidden', //esconder barra de título e menu
-            autoHideMenuBar: true, //esconder o menu
-            modal: true,
-            parent: father,
-            icon: './src/public/img/ajuda.png'
+    // botões
+    ipcMain.on('open-client', () => {
+        clientWindow()
+    }),
+
+        ipcMain.on('open-fornecedor', () => {
+            fornecedorWindow()
         })
-    }
-    // nativeTheme.themeSource = 'dark'
-    about.loadFile('./src/views/sobre.html')
-
-    // bug 2 (reabrir a janela ao se estiver fechada)
-    about.on('closed', () => {
-        about = null
-    })
 }
 
-let client //Resolver bug de abertura de várias janelas
-
+// Janela clientes >>>>>>>>>>>>>>>>>>>>>>>>>>>
 const clientWindow = () => {
     const father = BrowserWindow.getFocusedWindow()
-    // Se a janela about n estiver aberta (bug 1) abrir
-    if (!client) {
-        client = new BrowserWindow({
-            width: 800, //largura
-            height: 800, //altura
-            resizable: false, //evitar o redimensionamento
-            //titleBarStyle: 'hidden', //esconder barra de título e menu
-            autoHideMenuBar: true, //esconder o menu
-            modal: true,
+    if (father) {
+        const child = new BrowserWindow({
+            width: 800,
+            height: 600,
+            icon: './src/public/img/pc.png',
+            autoHideMenuBar: true,
+            resizable: false,
             parent: father,
-            icon: './src/public/img/ajuda.png'
+            modal: true,
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js')
+            }
         })
+        child.loadFile('./src/views/clientes.html')
     }
-    // nativeTheme.themeSource = 'dark'
-    client.loadFile('./src/views/clientes.html')
-
-    // bug 2 (reabrir a janela ao se estiver fechada)
-    client.on('closed', () => {
-        client = null
-    })
 }
 
-let supp //Resolver bug de abertura de várias janelas
-// fornecedor
-const suppWindow = () => {
+// Janela fornecedores >>>>>>>>>>>>>>>>>>>>>>>>>>>
+const fornecedorWindow = () => {
     const father = BrowserWindow.getFocusedWindow()
-    // Se a janela about n estiver aberta (bug 1) abrir
-    if (!supp) {
-        supp = new BrowserWindow({
-            width: 1280, //largura
-            height: 720, //altura
-            resizable: false, //evitar o redimensionamento
-            //titleBarStyle: 'hidden', //esconder barra de título e menu
-            autoHideMenuBar: true, //esconder o menu
-            modal: true,
+    if (father) {
+        const child = new BrowserWindow({
+            width: 1280,
+            height: 720,
+            icon: './src/public/img/fornecedor.png',
+            autoHideMenuBar: true,
+            resizable: false,
             parent: father,
-            icon: './src/public/img/ajuda.png'
+            modal: true,
+            webPreferences: {
+                preload: path.join(__dirname, 'preload.js')
+            }
         })
+        child.loadFile('./src/views/fornecedores.html')
     }
-    // nativeTheme.themeSource = 'dark'
-    supp.loadFile('./src/views/fornecedores.html')
-
-    // bug 2 (reabrir a janela ao se estiver fechada)
-    supp.on('closed', () => {
-        supp = null
-    })
 }
 
-let relatorios
-
-const relatoriosWindow = () => {
-    const father = BrowserWindow.getFocusedWindow()
-    // Se a janela about n estiver aberta (bug 1) abrir
-    if (!relatorios) {
-        relatorios = new BrowserWindow({
-            width: 800, //largura
-            height: 600, //altura
-            resizable: false, //evitar o redimensionamento
-            //titleBarStyle: 'hidden', //esconder barra de título e menu
-            autoHideMenuBar: true, //esconder o menu
-            modal: true,
-            parent: father,
-            icon: './src/public/img/ajuda.png'
-        })
-    }
-    // nativeTheme.themeSource = 'dark'
-    relatorios.loadFile('./src/views/relatorios.html')
-
-    // bug 2 (reabrir a janela ao se estiver fechada)
-    relatorios.on('closed', () => {
-        relatorios = null
-    })
-}
-
-let product //Resolver bug de abertura de várias janelas
-
-const productWindow = () => {
-    const father = BrowserWindow.getFocusedWindow()
-    // Se a janela about n estiver aberta (bug 1) abrir
-    if (!product) {
-        product = new BrowserWindow({
-            width: 1280, //largura
-            height: 720, //altura
-            resizable: false, //evitar o redimensionamento
-            //titleBarStyle: 'hidden', //esconder barra de título e menu
-            autoHideMenuBar: true, //esconder o menu
-            modal: true,
-            parent: father,
-            icon: './src/public/img/ajuda.png'
-        })
-    }
-    // nativeTheme.themeSource = 'dark'
-    product.loadFile('./src/views/produtos.html')
-
-    // bug 2 (reabrir a janela ao se estiver fechada)
-    product.on('closed', () => {
-        product = null
-    })
-}
 // iniciar a aplicação
 app.whenReady().then(() => {
 
-    //status de conexão com o banco de dados
-    ipcMain.on('send-message', (event, message) => {
-        console.log(`<<< ${message}`)
-        statusConexao()
+    // conexão com o banco de dados
+    ipcMain.on('db-conect', async (event, message) => {
+        dbCon = await dbStatus()
+        event.reply('db-message', "conectado")
     })
 
-    //desconectar do banco ao encerrar a janela
+    // desconectar do banco ao encerrar a aplicação
     app.on('before-quit', async () => {
-        await desconectar()
+        await desconectar(dbCon)
     })
 
     createWindow()
@@ -182,30 +108,20 @@ app.on('window-all-closed', () => {
     }
 })
 
-
-
-// Template do menu personalizado
-
+// template do menu
 const template = [
     {
-        label: 'Arquivo',
+        label: 'Cadastro',
         submenu: [
+            {
+                label: 'Clientes',
+                accelerator: 'Alt+C',
+                click: () => clientWindow()
+            },
             {
                 label: 'Sair',
                 click: () => app.quit(),
                 accelerator: 'Alt+F4'
-            },
-            {
-                label: 'Clientes',
-                click: () => clientWindow(),
-            },
-            {
-                label: 'Fornecedores',
-                click: () => suppWindow(),
-            },
-            {
-                label: 'Produtos',
-                click: () => productWindow(),
             }
         ]
     },
@@ -219,6 +135,9 @@ const template = [
             {
                 label: 'Ferramentas do desenvolvedor',
                 role: 'toggleDevTools'
+            },
+            {
+                type: 'separator'
             },
             {
                 label: 'Aplicar zoom',
@@ -235,43 +154,231 @@ const template = [
         ]
     },
     {
-        label: 'Relatorios',
-        click: () => relatoriosWindow(),
-    },
-    {
         label: 'Ajuda',
         submenu: [
+            {
+                label: 'Projeto',
+                click: () => shell.openExternal('https://joseassis.com.br/projetos.html')
+            },
             {
                 type: 'separator'
             },
             {
                 label: 'Sobre',
-                click: () => aboutWindow(),
+                //click: () => aboutWindow()
             }
         ]
-    },
+    }
 ]
 
-
-//==================================================================================//
-//função que verifica o status da conexão
-const statusConexao = async () => {
+//CRUD Create >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ipcMain.on('new-client', async (event, cliente) => {
+    console.log(cliente) //Teste do passo 2 - slide
+    // Passo 3 (slide): cadastrar o cliente no MongoDB
     try {
-        await conectar()
-        win.webContents.send('db-status', 'Banco de dados conectado.')
+        // extrair os dados do objeto
+        const novoCliente = new clienteModel({
+            nomeCliente: cliente.nomeCli,
+            foneCliente: cliente.foneCli,
+            emailCliente: cliente.emailCli
+        })
+        await novoCliente.save() //save() - moongoose
+        dialog.showMessageBox({
+            type: 'info',
+            title: 'Aviso',
+            message: "Cliente cadastrado com sucesso!",
+            buttons: ['OK']
+        })
     } catch (error) {
-        win.webContents.send('db-status', `Erro de conexão ${error.message}`)
+        console.log(error)
     }
-}
-ipcMain.on('open-client', () => {
-    clientWindow()
+}),
+
+    ipcMain.on('new-fornecedor', async (event, fornecedor) => {
+        console.log(fornecedor) //Teste do passo 2 - slide
+        // Passo 3 (slide): cadastrar o cliente no MongoDB
+        try {
+            // extrair os dados do objeto
+            const novoFornecedor = new fornecedorModel({
+                rzsFornecedor: fornecedor.rzsFor,
+                cpnjFornecedor: fornecedor.cpnjFor,
+                foneFornecedor: fornecedor.foneFor,
+                emailFornecedor: fornecedor.emailFor,
+                logradouroFornecedor: fornecedor.logradouroFor,
+                numFornecedor: fornecedor.numFor,
+                complementoFornecedor: fornecedor.complementoFor,
+                bairroFornecedor: fornecedor.bairroFor,
+                localidadeFornecedor: fornecedor.localidadeFor,
+                ufFornecedor: fornecedor.ufFor,
+                cepFornecedor: fornecedor.cepFor
+            })
+            await novoFornecedor.save() //save() - moongoose
+            dialog.showMessageBox({
+                type: 'info',
+                title: 'Aviso',
+                message: "Fornecedor cadastrado com sucesso!",
+                buttons: ['OK']
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }),
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+    //CRUD Read CLIENTE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // Aviso (Busca: Preenchimento de campo obrigatório)
+    ipcMain.on('dialog-infoSearchClient', (event) => {
+        dialog.showMessageBox({
+            type: 'warning',
+            title: 'Aviso',
+            message: "Preencha o nome do cliente",
+            buttons: ['OK']
+        })
+        event.reply('focus-searchClient')
+    })
+// Recebimento do pedido de buscar de um cliente pelo nome (Passo 1)
+ipcMain.on('dialog-infoSearchClient', (event) => {
+    dialog.showMessageBox({
+        type: 'warning',
+        title: 'Atenção!',
+        message: 'Preencha um nome no campo de busca',
+        buttons: ['OK']
+    })
+    event.reply('focus-searchClient') //UX
 })
-ipcMain.on('open-supp', () => {
-    suppWindow()
+// Busca do cliente pelo nome
+ipcMain.on('search-client', async (event, nomeCliente) => {
+    console.log(nomeCliente) //receber pedido de busca do form
+    try {
+        const dadosCliente = await clienteModel.find({ nomeCliente: new RegExp(nomeCliente, 'i') }) // buscar no banco 
+        console.log(dadosCliente)
+        //UX
+        if (dadosCliente.length === 0) {
+            dialog.showMessageBox({
+                type: 'warning',
+                title: 'Clientes',
+                message: 'Cliente não cadastrado.\nDeseja cadastrar este cliente?',
+                defaultId: 0,
+                buttons: ['Sim', 'Nâo']
+            }).then((result) => {
+                if (result.response === 0) {
+                    event.reply('set-nameClient')
+                } else {
+                    event.reply('clear-search')
+                }
+            })
+        } else {
+            event.reply('data-client', JSON.stringify(dadosCliente)) //envio dos dados do cliente ao renderizador (cliente.js)
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
 })
-ipcMain.on('open-product', () => {
-    productWindow()
+
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+// CRUD Update >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ipcMain.on('update-client', async (event, cliente) => {
+    console.log(cliente) // teste do passo 2
+
+    try {
+        const clienteEditado = await clienteModel.findByIdAndUpdate(
+            cliente.idCli, {
+            nomeCliente: cliente.nomeCli,
+            foneCliente: cliente.foneCli,
+            emailCliente: cliente.emailCli
+        },
+            {
+                new: true
+            }
+        )
+        dialog.showMessageBox({
+            type: 'info',
+            title: "Aviso",
+            message: "Dados do cliente alterados com sucesso",
+            buttons: ['OK']
+        })
+        event.reply('reset-form')
+    } catch (error) {
+        console.log(error)
+    }
 })
-ipcMain.on('open-relatorios', () => {
-    relatoriosWindow()
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+// CRUD Delete >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ipcMain.on('delete-client', (event, idCli) => {
+    console.log(idCli) // teste do passo 2
+    //Importante! Confirmar a ação antes de excluir do banco
+    dialog.showMessageBox({
+        type: 'error',
+        title: 'ATENÇÃO!',
+        message: 'Tem certeza que deseja excluir este cliente?',
+        defaultId: 0,
+        buttons: ['Sim', 'Não']
+    }).then (async(result) => {
+        if (result.response === 0) {
+            // Passo 3 (excluir o cliente do banco)
+            try {                
+                await clienteModel.findByIdAndDelete(idCli)                
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    })
+})
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+//CRUD Read FORNECEDOR >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // Aviso (Busca: Preenchimento de campo obrigatório)
+    ipcMain.on('dialog-infoSearchFornecedor', (event) => {
+        dialog.showMessageBox({
+            type: 'warning',
+            title: 'Aviso',
+            message: "Preencha a Razão social do Fornecedor",
+            buttons: ['OK']
+        })
+        event.reply('focus-searchFornecedor')
+    })
+// Recebimento do pedido de buscar de um cliente pelo nome (Passo 1)
+ipcMain.on('dialog-infoSearchFornecedor', (event) => {
+    dialog.showMessageBox({
+        type: 'warning',
+        title: 'Atenção!',
+        message: 'Preencha um nome no campo de busca',
+        buttons: ['OK']
+    })
+    event.reply('focus-searchFornecedor') //UX
+})
+// Busca do cliente pelo nome
+ipcMain.on('search-Fornecedor', async (event, rzsFornecedor) => {
+    console.log(rzsFornecedor) //receber pedido de busca do form
+    try {
+        const dadosFornecedor = await fornecedorModel.find({ rzsFornecedor: new RegExp(rzsFornecedor, 'i') }) // buscar no banco 
+        console.log(dadosFornecedor)
+        //UX
+        if (dadosFornecedor.length === 0) {
+            dialog.showMessageBox({
+                type: 'warning',
+                title: 'Fornecedor',
+                message: 'Fornecedor não cadastrado.\nDeseja cadastrar este Fornecedor?',
+                defaultId: 0,
+                buttons: ['Sim', 'Nâo']
+            }).then((result) => {
+                if (result.response === 0) {
+                    event.reply('set-nameFornecedor')
+                } else {
+                    event.reply('clear-search')
+                }
+            })
+        } else {
+            event.reply('data-fornecedor', JSON.stringify(dadosFornecedor)) //envio dos dados do cliente ao renderizador (cliente.js)
+        }
+
+    } catch (error) {
+        console.log(error)
+    }
 })

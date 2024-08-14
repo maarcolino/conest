@@ -18,7 +18,7 @@
     <div class="container">
         <br>
         <br>
-        <form class="row g-3 " id="frmCliente">
+        <form class="row g-3 " id="frmFornecedor">
 
             <!-- Caixa de input -->
             <div class="col-md-6">
@@ -27,7 +27,7 @@
 
             <!-- botão de pesquisa / crud read -->
             <div class="col-md-4">
-                <button type="button" class="btn btn-danger">Buscar</button>
+                <button type="button" class="btn btn-danger" onclick="buscarFornecedor()" id="btnRead">Buscar</button>
             </div>
 
             <hr class="border border-danger border-1 opacity-75">
@@ -35,20 +35,23 @@
             <br>
 
             <div class="col-md-6">
-                <label for="inputRZS" class="form-label">Razão social</label>
-                <input type="text" class="form-control" id="inputRZS" required maxlength="30" spellcheck="false">
+                <label for="inputIdFornecedor" class="form-label">ID do Usuário</label>
+                <input type="text" class="form-control" id="inputIdFornecedor">
+
+                <label for="inputRzsFornecedor" class="form-label">Razão social</label>
+                <input type="text" class="form-control" id="inputRzsFornecedor" required maxlength="30" spellcheck="false">
                 <br>
 
-                <label for="inputCPNJ" class="form-label">Cpnj</label>
-                <input type="number" class="form-control" id="inputCPNJ" required maxlength="14" spellcheck="false">
+                <label for="inputCpnjFornecedor" class="form-label">Cpnj</label>
+                <input type="number" class="form-control" id="inputCpnjFornecedor" required maxlength="14" spellcheck="false">
                 <br>
 
-                <label for="inputTEL" class="form-label">Telefone</label>
-                <input type="tel" class="form-control" id="inputTEL" required maxlenght="11" spellcheck="false">
+                <label for="inputFoneFornecedor" class="form-label">Telefone</label>
+                <input type="tel" class="form-control" id="inputFoneFornecedor" required maxlenght="11" spellcheck="false">
                 <br>
 
-                <label for="inputEMAIL" class="form-label">Email</label>
-                <input type="email" class="form-control" id="inputEMAIL" required maxlength="30" spellcheck="false">
+                <label for="inputEmailFornecedor" class="form-label">Email</label>
+                <input type="email" class="form-control" id="inputEmailFornecedor" required maxlength="30" spellcheck="false">
                 <br>
             </div>
 
@@ -56,21 +59,21 @@
 
             <div class="col-md-4">
                 <div id="resultado">
-                    <label for="logradouro">Logradouro:</label>
-                    <input type="text" id="logradouro" class="form-control"  name="logradouro">
+                    <label for="inputLogradouroFornecedor">Logradouro:</label>
+                    <input type="text" id="inputLogradouroFornecedor" class="form-control"  name="logradouro">
 
-                    <label for="numero">Número:</label>
-                    <input type="text" id="numero" class="form-control"  name="numero">
+                    <label for="inputNumFornecedor">Número:</label>
+                    <input type="text" id="inputNumFornecedor" class="form-control"  name="numero">
 
-                    <label for="complemento">Complemento:</label>
-                    <input type="text" id="complemento" class="form-control"  name="complemento">
+                    <label for="inputComplementoFornecedor">Complemento:</label>
+                    <input type="text" id="inputComplementoFornecedor" class="form-control"  name="complemento">
 
-                    <label for="bairro">Bairro:</label>
-                    <input type="text" id="bairro" class="form-control" name="bairro">
+                    <label for="inputBairroFornecedor">Bairro:</label>
+                    <input type="text" id="inputBairroFornecedor" class="form-control" name="bairro">
 
                     <br>
                     <label for="localidade">Cidade:</label>
-                    <input type="text" id="localidade" class="form-control" name="localidade">
+                    <input type="text" id="inputLocalidadeFornecedor" class="form-control" name="localidade">
 
                     <br>
                     
@@ -87,25 +90,21 @@
             </div>
 
             <div class="col-md-6">
-                <button type="submit" class="btn btn-success">Adicionar</button>
-                <button type="button" class="btn btn-secondary">Editar</button>
-                <button type="button" class="btn btn-danger">Excluir</button>
-                <button type="reset" class="btn" id="btnReset"></button>
-            </div>
-
-
-            <!-- id do mongoDB oculto -->
-            <div class="col-md-8">
-                <input type="text" class="form-control" id="inputId">
+                <button type="submit" class="btn btn-success" id="btnCreate" >Adicionar</button>
+                <button type="button" class="btn btn-secondary" id="btnUpdate" onclick="editarFornecedor()">Editar</button>
+                <button type="button" class="btn btn-danger" id="btnDelete" onclick=excluirFornecedor()>Excluir</button>
+                <button type="reset" class="btn" id="btnReset" id="btnReset" onclick="resetForm()"></button>
             </div>
         </form>
 
+            
     </div>
 
     <!-- bootstrap -->
     <script src="cep.js"></script>
 
     <script src="../public/js/bootstrap.min.js"></script>
+    <script src="fornecedor.js"></script>
 </body>
 
 </html>

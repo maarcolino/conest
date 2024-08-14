@@ -35,9 +35,9 @@ footer img {
     height: 100px;
 }
 
-#inputId {
-    display: none;
-}
+/* #inputId {
+   display: none;
+} */
 
 #resultado {
     display: flex;

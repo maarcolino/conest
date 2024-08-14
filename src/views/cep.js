@@ -1,9 +1,9 @@
 const cepInput = document.getElementById('cep');
     const buscarButton = document.getElementById('buscar');
     const resultadoDiv = document.getElementById('resultado');
-    const logradouroInput = document.getElementById('logradouro');
-    const bairroInput = document.getElementById('bairro');
-    const localidadeInput = document.getElementById('localidade');
+    const logradouroInput = document.getElementById('inputLogradouroFornecedor');
+    const bairroInput = document.getElementById('inputBairroFornecedor');
+    const localidadeInput = document.getElementById('inputLocalidadeFornecedor');
     const ufInput = document.getElementById('uf');
 
     buscarButton.addEventListener('click', async () => {

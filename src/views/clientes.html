@@ -13,10 +13,9 @@
     <link rel="stylesheet" href="../public/css/style.css">
 </head>
 <body>
-    <br>
-    <h1>Clientes</h1>
     <div class="container">
-        <form class="row g-3 " id="frmCliente">
+        <h1>Clientes</h1>
+        <form class="row g-3" id="frmClient">
 
             <!-- Caixa de input -->
             <div class="col-md-6">
@@ -25,7 +24,7 @@
 
             <!-- botão de pesquisa / crud read -->
             <div class="col-md-4">
-                <button type="button" class="btn btn-danger">Buscar</button>
+                <button type="button" class="btn btn-danger" onclick="buscarCliente()" id="btnRead">Buscar</button>
             </div>
  
             <hr class="border border-danger border-1 opacity-75">
@@ -33,29 +32,28 @@
 
             <!-- id do mongoDB oculto -->
             <div class="col-md-6">
-                <input type="text" class="form-control" id="inputId" placeholder="ID">
+                <input type="text" class="form-control" id="inputClientId" placeholder="ID">
             </div>
  
             <br>
  
            
             <div class="col-md-8">
-                <label for="inputName" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="inputName" required maxlength="30" spellcheck="false">
+                <label for="inputNameClient" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="inputNameClient" required maxlength="50" spellcheck="false">
                 <br>
-                <label for="inputTEL" class="form-label">Telefone</label>
-                <input type="tel" class="form-control" id="inputTEL" required max="11" spellcheck="false">
+                <label for="inputPhoneClient" class="form-label">Telefone</label>
+                <input type="tel" class="form-control" id="inputPhoneClient" required maxlength="15">
                 <br>
-
-                <label for="inputEMAIL" class="form-label">Email</label>
-                <input type="email" class="form-control" id="inputEMAIL" required maxlength="30" spellcheck="false">
+                <label for="inputEmailClient" class="form-label">E-mail</label>
+                <input type="email" class="form-control" id="inputEmailClient" spellcheck="false">
             </div>
 
             <div class="col-md-6">
-                <button type="button" class="btn btn-success">Adicionar</button>
-                <button type="button" class="btn btn-secondary">Editar</button>
-                <button type="button" class="btn btn-danger">Excluir</button>
-                <button type="reset" class="btn" id="btnReset"></button>
+                <button type="submit" class="btn btn-success" id="btnCreate" >Adicionar</button>
+                <button type="button" class="btn btn-secondary" id="btnUpdate" onclick="editarCliente()">Editar</button>
+                <button type="button" class="btn btn-danger" id="btnDelete" onclick=excluirCliente()>Excluir</button>
+                <button type="reset" class="btn" id="btnReset" id="btnReset" onclick="resetForm()"></button>
             </div>
 
         </form>
@@ -63,5 +61,6 @@
  
      <!-- bootstrap -->
      <script src="../public/js/bootstrap.min.js"></script>
+     <script src="cliente.js"></script>
 </body>
 </html>

@@ -1,32 +1,29 @@
-const  { contextBridge,ipcRenderer } = require('electron')
- 
- 
+const { contextBridge, ipcRenderer } = require('electron')
+
+//conexão com o banco de dados
+ipcRenderer.send('db-conect')
+
+// processos
 contextBridge.exposeInMainWorld('api', {
     openClient: () => ipcRenderer.send('open-client'),
-    openSupp: () => ipcRenderer.send('open-supp'),
-    openRelatorios: () => ipcRenderer.send('open-relatorios'),
-    openProduct: () => ipcRenderer.send('open-product')
- 
-})
-// Status de conexão (verificar se o banco de dados está conectado)
- 
-ipcRenderer.send('send-message', "Status do banco de dados:")
- 
-ipcRenderer.on('db-status', (event, status) => {
-    console.log(status)
- 
-    function obterData() {
-        const data = new Date();
-        const options = {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        }
-        return data.toLocaleDateString('pt-BR', options);
-    }
-    // interagir diretamente no DOM do documento html (index.html)
-    window.addEventListener('DOMContentLoaded', () =>{
-        const dataAtual = document.getElementById('dataAtual').innerHTML = obterData()
-    })
+    openFornecedor: () => ipcRenderer.send('open-fornecedor'),
+    dbMessage: (message) => ipcRenderer.on('db-message', message),
+    newClient: (cliente) => ipcRenderer.send('new-client', cliente),
+    newFornecedor: (fornecedor) => ipcRenderer.send('new-fornecedor', fornecedor),
+    infoSearchClient: () => ipcRenderer.send('dialog-infoSearchClient'),
+    infoSearchFornecedor: () => ipcRenderer.send('dialog-infoSearchFornecedor'),
+    focusClient: (args) => ipcRenderer.on('focus-searchClient', args),
+    focusFornecedor: (args) => ipcRenderer.on('focus-searchFornecedor', args),
+    searchClient: (nomeCliente) => ipcRenderer.send('search-client', nomeCliente),
+    searchFornecedor: (rzsFornecedor) => ipcRenderer.send('search-fornecedor', rzsFornecedor),
+    nameClient: (args) => ipcRenderer.on('set-nameClient', args),
+    nameFornecedor: (args) => ipcRenderer.on('set-nameFornecedor', args),
+    clearSearch: (args) => ipcRenderer.on('clear-search', args),
+    dataClient: (dadosCliente) => ipcRenderer.on('data-client', dadosCliente),
+    dataFornecedor: (dadosFornecedor) => ipcRenderer.on('data-fornecedor', dadosFornecedor),
+    resetForm: (args) => ipcRenderer.on('reset-form', args),
+    updateClient: (cliente) => ipcRenderer.send('update-client', cliente),
+    updateFornecedor: (fornecedor) => ipcRenderer.send('update-fornecedor', fornecedor),
+    deleteClient: (idCli) => ipcRenderer.send('delete-client', idCli),
+    deleteFornecedor: (idFor) => ipcRenderer.send('delete-fornecedor', idFor)
 })
