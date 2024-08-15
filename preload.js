@@ -15,15 +15,15 @@ contextBridge.exposeInMainWorld('api', {
     focusClient: (args) => ipcRenderer.on('focus-searchClient', args),
     focusFornecedor: (args) => ipcRenderer.on('focus-searchFornecedor', args),
     searchClient: (nomeCliente) => ipcRenderer.send('search-client', nomeCliente),
-    searchFornecedor: (rzsFornecedor) => ipcRenderer.send('search-fornecedor', rzsFornecedor),
+    searchFornecedor: (rzsFornecedor) => ipcRenderer.send('search-Fornecedor', rzsFornecedor),
     nameClient: (args) => ipcRenderer.on('set-nameClient', args),
     nameFornecedor: (args) => ipcRenderer.on('set-nameFornecedor', args),
     clearSearch: (args) => ipcRenderer.on('clear-search', args),
     dataClient: (dadosCliente) => ipcRenderer.on('data-client', dadosCliente),
-    dataFornecedor: (dadosFornecedor) => ipcRenderer.on('data-fornecedor', dadosFornecedor),
+    dataFornecedor: (dadosFornecedor) => ipcRenderer.on('data-Fornecedor', dadosFornecedor),
     resetForm: (args) => ipcRenderer.on('reset-form', args),
     updateClient: (cliente) => ipcRenderer.send('update-client', cliente),
-    updateFornecedor: (fornecedor) => ipcRenderer.send('update-fornecedor', fornecedor),
+    updateFornecedor: (fornecedor) => ipcRenderer.send('update-Fornecedor', fornecedor),
     deleteClient: (idCli) => ipcRenderer.send('delete-client', idCli),
-    deleteFornecedor: (idFor) => ipcRenderer.send('delete-fornecedor', idFor)
+    deleteFornecedor: (idFor) => ipcRenderer.send('delete-Fornecedor', idFor)
 })

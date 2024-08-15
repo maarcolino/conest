@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //captura dos inputs do formulário (passo 1 - slide)
 
 let formFornecedor = document.getElementById('frmFornecedor')
+let idFornecedor = document.getElementById('inputFornecedorId')
 let rzsFornecedor = document.getElementById('inputRzsFornecedor')
 let cpnjFornecedor = document.getElementById('inputCpnjFornecedor')
 let foneFornecedor = document.getElementById('inputFoneFornecedor')
@@ -102,7 +103,7 @@ api.dataFornecedor((event, dadosFornecedor) => {
         document.getElementById('inputBairroFornecedor').value = c.bairroFornecedor
         document.getElementById('inputLocalidadeFornecedor').value = c.localidadeFornecedor
         document.getElementById('uf').value = c.ufFornecedor
-        document.getElementById('cepFornecedor').value = c.cepFornecedor
+        document.getElementById('cep').value = c.cepFornecedor
         //limpar caixa de busca
         document.getElementById("inputSearch").value = ""
         //remover o foco e desativar a caixa de busca
@@ -118,8 +119,53 @@ api.dataFornecedor((event, dadosFornecedor) => {
 })
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-//CRUD Update >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+// CRud Update >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+function editarFornecedor() {
+    //Passo 1 do slide
+    const fornecedor = {
+        idFor: idFornecedor.value,
+        rzsFor: rzsFornecedor.value,
+        cpnjFor: cpnjFornecedor.value,
+        foneFor: foneFornecedor.value,
+        emailFor: emailFornecedor.value,
+        logradouroFor: logradouroFornecedor.value,
+        numFor: numFornecedor.value,
+        complementoFor: complementoFornecedor.value,
+        bairroFor: bairroFornecedor.value,
+        localidadeFor: localidadeFornecedor.value,
+        ufFor: ufFornecedor.value,
+        cepFor: cepFornecedor.value
+    }
+    console.log(fornecedor) // teste do passo 1
+    //Passo 2: Enviar o objeto cliente ao main.js
+    api.updateFornecedor(fornecedor)
+}
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-//CRUD Delete >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+// CRud Delete >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+function excluirFornecedor() {
+    let idFor = idFornecedor.value // Passo 1 (obter o id do cliente)
+    console.log(idFor) // teste do passo 1
+    api.deleteFornecedor(idFor) // Passo 2 - enviar o id do cliente ao main
+}
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+// Reset Form >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+api.resetForm((args) => {
+    resetForm()   
+})
+
+function resetForm() {
+    document.getElementById('inputSearch').disabled = false    
+    document.getElementById('inputSearch').focus()    
+    btnCreate.disabled = true
+    btnRead.disabled = false
+    btnUpdate.disabled = true
+    btnDelete.disabled = true
+    
+}
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

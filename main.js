@@ -279,7 +279,7 @@ ipcMain.on('search-client', async (event, nomeCliente) => {
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
-// CRUD Update >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// CRUD Update CLIENTE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ipcMain.on('update-client', async (event, cliente) => {
     console.log(cliente) // teste do passo 2
 
@@ -308,7 +308,7 @@ ipcMain.on('update-client', async (event, cliente) => {
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
-// CRUD Delete >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+// CRUD Delete CLIENTE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ipcMain.on('delete-client', (event, idCli) => {
     console.log(idCli) // teste do passo 2
     //Importante! Confirmar a ação antes de excluir do banco
@@ -318,11 +318,11 @@ ipcMain.on('delete-client', (event, idCli) => {
         message: 'Tem certeza que deseja excluir este cliente?',
         defaultId: 0,
         buttons: ['Sim', 'Não']
-    }).then (async(result) => {
+    }).then(async (result) => {
         if (result.response === 0) {
             // Passo 3 (excluir o cliente do banco)
-            try {                
-                await clienteModel.findByIdAndDelete(idCli)                
+            try {
+                await clienteModel.findByIdAndDelete(idCli)
             } catch (error) {
                 console.log(error)
             }
@@ -333,16 +333,16 @@ ipcMain.on('delete-client', (event, idCli) => {
 
 
 //CRUD Read FORNECEDOR >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    // Aviso (Busca: Preenchimento de campo obrigatório)
-    ipcMain.on('dialog-infoSearchFornecedor', (event) => {
-        dialog.showMessageBox({
-            type: 'warning',
-            title: 'Aviso',
-            message: "Preencha a Razão social do Fornecedor",
-            buttons: ['OK']
-        })
-        event.reply('focus-searchFornecedor')
+// Aviso (Busca: Preenchimento de campo obrigatório)
+ipcMain.on('dialog-infoSearchFornecedor', (event) => {
+    dialog.showMessageBox({
+        type: 'warning',
+        title: 'Aviso',
+        message: "Preencha a Razão social do Fornecedor",
+        buttons: ['OK']
     })
+    event.reply('focus-searchFornecedor')
+})
 // Recebimento do pedido de buscar de um cliente pelo nome (Passo 1)
 ipcMain.on('dialog-infoSearchFornecedor', (event) => {
     dialog.showMessageBox({
@@ -375,10 +375,71 @@ ipcMain.on('search-Fornecedor', async (event, rzsFornecedor) => {
                 }
             })
         } else {
-            event.reply('data-fornecedor', JSON.stringify(dadosFornecedor)) //envio dos dados do cliente ao renderizador (cliente.js)
+            event.reply('data-Fornecedor', JSON.stringify(dadosFornecedor)) //envio dos dados do cliente ao renderizador (cliente.js)
         }
 
     } catch (error) {
         console.log(error)
     }
 })
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+// CRUD Update FORNECEDOR >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ipcMain.on('update-Fornecedor', async (event, fornecedor) => {
+    console.log(fornecedor) // teste do passo 2
+
+    try {
+        const fornecedorEditado = await fornecedorModel.findByIdAndUpdate(
+            fornecedor.idFor, {
+            rzsFornecedor: fornecedor.rzsFor,
+            cpnjFornecedor: fornecedor.cpnjFor,
+            foneFornecedor: fornecedor.foneFor,
+            emailFornecedor: fornecedor.emailFor,
+            logradouroFornecedor: fornecedor.logradouroFor,
+            numFornecedor: fornecedor.numFor,
+            complementoFornecedor: fornecedor.complementoFor,
+            bairroFornecedor: fornecedor.bairroFor,
+            localidadeFornecedor: fornecedor.localidadeFor,
+            ufFornecedor: fornecedor.ufFor,
+            cepFornecedor: fornecedor.cepFor
+        },
+            {
+                new: true
+            }
+        )
+        dialog.showMessageBox({
+            type: 'info',
+            title: "Aviso",
+            message: "Dados do cliente alterados com sucesso",
+            buttons: ['OK']
+        })
+        event.reply('reset-form')
+    } catch (error) {
+        console.log(error)
+    }
+})
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+// CRUD Delete FORNECEDOR >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ipcMain.on('delete-Fornecedor', (event, idFor) => {
+    console.log(idFor) // teste do passo 2
+    //Importante! Confirmar a ação antes de excluir do banco
+    dialog.showMessageBox({
+        type: 'error',
+        title: 'ATENÇÃO!',
+        message: 'Tem certeza que deseja excluir este Fornecedor?',
+        defaultId: 0,
+        buttons: ['Sim', 'Não']
+    }).then(async (result) => {
+        if (result.response === 0) {
+          
+            try {
+                await fornecedorModel.findByIdAndDelete(idFor)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    })
+})
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

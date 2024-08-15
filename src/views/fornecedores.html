@@ -36,7 +36,7 @@
 
             <div class="col-md-6">
                 <label for="inputIdFornecedor" class="form-label">ID do Usuário</label>
-                <input type="text" class="form-control" id="inputIdFornecedor">
+                <input type="text" class="form-control" id="inputFornecedorId">
 
                 <label for="inputRzsFornecedor" class="form-label">Razão social</label>
                 <input type="text" class="form-control" id="inputRzsFornecedor" required maxlength="30" spellcheck="false">
@@ -92,7 +92,7 @@
             <div class="col-md-6">
                 <button type="submit" class="btn btn-success" id="btnCreate" >Adicionar</button>
                 <button type="button" class="btn btn-secondary" id="btnUpdate" onclick="editarFornecedor()">Editar</button>
-                <button type="button" class="btn btn-danger" id="btnDelete" onclick=excluirFornecedor()>Excluir</button>
+                <button type="button" class="btn btn-danger" id="btnDelete" onclick="excluirFornecedor()">Excluir</button>
                 <button type="reset" class="btn" id="btnReset" id="btnReset" onclick="resetForm()"></button>
             </div>
         </form>
